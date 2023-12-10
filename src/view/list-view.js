@@ -1,0 +1,21 @@
+import { createElement } from '../render';
+
+function createListTemplate() {
+  return '<ul class="trip-events__list"></ul>';
+}
+
+export default class ListView {
+  getTemplate() {
+    return createListTemplate();
+  }
+
+  getElement() {
+    if (!this.element) {
+      this.element = createElement(this.getTemplate);
+    }
+  }
+
+  removeElement() {
+    this.element = null;
+  }
+}
