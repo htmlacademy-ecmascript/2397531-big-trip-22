@@ -1,7 +1,7 @@
-import { createElement } from '../render';
+import { createElement } from '../render.js';
 
 function createAddPouintTemplate() {
-  return `<li class="trip-events__item">
+  return (`<li class="trip-events__item">
   <form class="event event--edit" action="#" method="post">
     <header class="event__header">
       <div class="event__type-wrapper">
@@ -162,7 +162,7 @@ function createAddPouintTemplate() {
       </section>
     </section>
   </form>
-</li>`;
+</li>`);
 }
 
 export default class AddPointView {
@@ -172,8 +172,10 @@ export default class AddPointView {
 
   getElement() {
     if (!this.element) {
-      this.element = createElement(this.getTemplate);
+      this.element = createElement(this.getTemplate());
     }
+
+    return this.element;
   }
 
   removeElement() {

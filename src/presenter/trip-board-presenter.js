@@ -1,10 +1,9 @@
-import FilterView from './view/filter-view';
-import SortView from './view/sort-view';
-import ListView from './view/list-view';
-import AddPointView from './view/add-point-view';
-import EditPointView from './view/edit-point-view';
-import PointView from './view/point-view';
-import { render } from './render';
+import FilterView from '../view/filter-view.js';
+import SortView from '../view/sort-view.js';
+import ListView from '../view/list-view.js';
+import AddPointView from '../view/add-point-view.js';
+import PointView from '../view/point-view.js';
+import { render } from '../render.js';
 
 const POINT_COUNT = 3;
 
