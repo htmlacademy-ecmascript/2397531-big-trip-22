@@ -166,8 +166,14 @@ function createAddPouintTemplate() {
 }
 
 export default class AddPointView {
+
+  constructot({point, offer}) {
+    this.point = point;
+    this.offer = offer;
+  }
+
   getTemplate() {
-    return createAddPouintTemplate();
+    return createAddPouintTemplate(this.point, this.offer);
   }
 
   getElement() {
