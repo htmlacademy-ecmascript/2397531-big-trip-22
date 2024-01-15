@@ -1,4 +1,4 @@
-import { createElement } from '../render.js';
+import AbstractView from '../framework/view/abstract-view.js';
 
 function createAddPouintTemplate() {
   return (`<li class="trip-events__item">
@@ -165,26 +165,9 @@ function createAddPouintTemplate() {
 </li>`);
 }
 
-export default class AddPointView {
+export default class AddPointView extends AbstractView {
 
-  constructot({point, offer}) {
-    this.point = point;
-    this.offer = offer;
-  }
-
-  getTemplate() {
-    return createAddPouintTemplate(this.point, this.offer);
-  }
-
-  getElement() {
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
-    }
-
-    return this.element;
-  }
-
-  removeElement() {
-    this.element = null;
+  get template() {
+    return createAddPouintTemplate();
   }
 }

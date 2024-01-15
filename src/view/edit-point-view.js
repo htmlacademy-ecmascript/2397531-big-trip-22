@@ -1,10 +1,13 @@
-import { createElement } from '../render.js';
 import { formatDate } from '../utils.js';
 import { TYPES_EVENT } from '../const.js';
+import AbstractView from '../framework/view/abstract-view.js';
 
-function createEditPointView(point, offersList) {
+function createEditPointView(point, offersList, destinations) {
   const {basePrice, dateFrom, dateTo, destination, offers, type} = point;
   const offersPoint = offersList.find((offer) => offer.type === type);
+
+  const destinationPoint = destinations.find((dest) => dest.id === destination);
+  const renderDestinationsList = destinations.map((dest) => `<option value=${dest.name}></option>`).join('');
 
   return (`<li class="trip-events__item">
   <form class="event event--edit" action="#" method="post">
@@ -22,8 +25,8 @@ function createEditPointView(point, offersList) {
 
             ${TYPES_EVENT.map((typeEvent) => (
       `<div class="event__type-item">
-            <input id="event-type-${typeEvent}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="taxi" ${(typeEvent === type ? 'checked' : '')}>
-            <label class="event__type-label  event__type-label--${typeEvent}" for="event-type-taxi-1">${typeEvent}</label>
+          <input id="event-type-${typeEvent}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="taxi" ${(typeEvent === type ? 'checked' : '')}>
+          <label class="event__type-label  event__type-label--${typeEvent}" for="event-type-taxi-1">${typeEvent}</label>
       </div>`
     )).join('')}
           </fieldset>
@@ -34,11 +37,9 @@ function createEditPointView(point, offersList) {
         <label class="event__label  event__type-output" for="event-destination-1">
           ${type}
         </label>
-        <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destination.name}" list="destination-list-1">
+        <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destinationPoint.name}" list="destination-list-1">
         <datalist id="destination-list-1">
-          <option value="Amsterdam"></option>
-          <option value="Geneva"></option>
-          <option value="Chamonix"></option>
+          ${renderDestinationsList}
         </datalist>
       </div>
 
@@ -84,10 +85,10 @@ function createEditPointView(point, offersList) {
 
       <section class="event__section  event__section--destination">
         <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-        <p class="event__destination-description">${destination.description}</p>
+        <p class="event__destination-description">${destinationPoint.description}</p>
         <div class="event__photos-container">
               <div class="event__photos-tape">
-              ${destination.pictures.map((image) => `<img class="event__photo" src="${image.src}" alt="${image.description}">`).join('')}
+              ${destinationPoint.pictures.map((image) => `<img class="event__photo" src="${image.src}" alt="${image.description}">`).join('')}
               </div>
         </div>
       </section>
@@ -96,25 +97,36 @@ function createEditPointView(point, offersList) {
 </li>`);
 }
 
-export default class EditPointView {
-  constructor({point, offers}) {
-    this.point = point;
-    this.offers = offers;
+export default class EditPointView extends AbstractView {
+  #point = null;
+  #offers = null;
+  #destinations = null;
+  #hundleFormSubmit = null;
+  #hundleFormReset = null;
+
+  constructor({point, offers, destinations, onFormSubmit, onFormReset}) {
+    super();
+    this.#point = point;
+    this.#offers = offers;
+    this.#destinations = destinations;
+    this.#hundleFormSubmit = onFormSubmit;
+    this.#hundleFormReset = onFormReset;
+
+    this.element.querySelector('form').addEventListener('submit', this.#formSubmitHundler);
+    this.element.querySelector('form').addEventListener('reset', this.#formResetHundler);
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#formResetHundler);
   }
 
-  getTemplate() {
-    return createEditPointView(this.point, this.offers);
+  get template() {
+    return createEditPointView(this.#point, this.#offers, this.#destinations);
   }
 
-  getElement() {
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
-    }
+  #formSubmitHundler = (evt) => {
+    evt.preventDefault();
+    this.#hundleFormSubmit();
+  };
 
-    return this.element;
-  }
-
-  removeElement() {
-    this.element = null;
-  }
+  #formResetHundler = () => {
+    this.#hundleFormReset();
+  };
 }
