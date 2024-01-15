@@ -1,16 +1,20 @@
-import { createElement } from '../render.js';
+import AbstractView from '../framework/view/abstract-view.js';
 import { formatDate } from '../utils.js';
 import { calculateDuration } from '../utils.js';
 
-function createPointTemplate(point, offerList) {
+function createPointTemplate(point, offerList, destinations) {
   const {type, dateFrom, dateTo, basePrice, isFavourite, offers, destination} = point;
+
+  const destinationPoint = destinations.find((dest) => dest.id === destination);
+  const offerPoint = offerList.find((currentOffer) => currentOffer.type === type);
+
   return (`<li class="trip-events__item">
   <div class="event">
     <time class="event__date" datetime="2019-03-18">${formatDate(dateFrom)}</time>
     <div class="event__type">
       <img class="event__type-icon" width="42" height="42" src="img/icons/${type}.png" alt="Event type icon">
     </div>
-    <h3 class="event__title">${type} ${destination.name}</h3>
+    <h3 class="event__title">${type} ${destinationPoint.name}</h3>
     <div class="event__schedule">
       <p class="event__time">
         <time class="event__start-time" datetime="2019-03-18T10:30">${formatDate(dateFrom)}</time>
@@ -24,7 +28,7 @@ function createPointTemplate(point, offerList) {
     </p>
     <h4 class="visually-hidden">Offers:</h4>
     <ul class="event__selected-offers">
-    ${offerList.offers.map((offer) => {
+    ${offerPoint.offers.map((offer) => {
       if (offers.includes(offer.id)) {
         return (`<li class="event__offer">
                 <span class="event__offer-title">${offer.title}</span>
@@ -47,25 +51,28 @@ function createPointTemplate(point, offerList) {
 </li>`);
 }
 
-export default class PointView {
-  constructor({point, offer}) {
-    this.point = point;
-    this.offer = offer;
+export default class PointView extends AbstractView {
+  #point = null;
+  #offers = null;
+  #destinations = null;
+  #hundleEditBtnClick = null;
+
+  constructor({point, offers, destinations, onEditBtnClick}) {
+    super();
+    this.#point = point;
+    this.#offers = offers;
+    this.#destinations = destinations;
+    this.#hundleEditBtnClick = onEditBtnClick;
+
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#EditBtnClickHundler);
   }
 
-  getTemplate() {
-    return createPointTemplate(this.point, this.offer);
+  get template() {
+    return createPointTemplate(this.#point, this.#offers, this.#destinations);
   }
 
-  getElement() {
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
-    }
-
-    return this.element;
-  }
-
-  removeElement() {
-    this.element = null;
-  }
+  #EditBtnClickHundler = (evt) => {
+    evt.preventDefault();
+    this.#hundleEditBtnClick();
+  };
 }

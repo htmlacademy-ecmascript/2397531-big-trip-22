@@ -59,7 +59,11 @@ const mockDestinations = [
 ];
 
 function getRandomDestination() {
-  return getRandomArrayElement(mockDestinations);
+  return getRandomArrayElement(mockDestinations).id;
 }
 
-export {getRandomDestination};
+function getDestinations() {
+  return mockDestinations;
+}
+
+export {getRandomDestination, getDestinations};
