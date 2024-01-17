@@ -1,6 +1,5 @@
 import dayjs from 'dayjs';
 
-const DATE_FORMAT = 'D MMM';
 const COUNT_MS_DAY = 86400000;
 const COUNT_MS_HOUR = 3600000;
 
@@ -12,8 +11,8 @@ function getRandomArrayElement(array) {
   return array[getRandomNumber(0, array.length - 1)];
 }
 
-function formatDate(date) {
-  return date ? dayjs(date).format(DATE_FORMAT) : '';
+function formatDate(date, dateFormat) {
+  return date ? dayjs(date).format(dateFormat) : '';
 }
 
 function calculateDuration(startDate, endDate) {
