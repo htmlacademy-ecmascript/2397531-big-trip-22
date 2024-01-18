@@ -5,7 +5,7 @@ export default class HeaderPresenter {
   #container;
   #pointsModel;
 
-  constructor({container, pointsModel}) {
+  constructor(container, pointsModel) {
     this.#container = container;
     this.#pointsModel = pointsModel;
   }
