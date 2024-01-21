@@ -4,11 +4,13 @@ import ListView from '../view/list-view.js';
 import { render } from '../framework/render.js';
 import EmptyListView from '../view/empty-list-view.js';
 import PointPresenter from './point-presenter.js';
+import { updateItem } from '../utils.js';
 export default class TripBoardPresenter {
   #tripListComponent = new ListView();
   #pointsModel = null;
   #listContainer = null;
   #filterContainer = null;
+  #pointPresenters = new Map();
 
   constructor(listContainer, filterContainer, pointsModel) {
     this.#listContainer = listContainer;
@@ -32,9 +34,21 @@ export default class TripBoardPresenter {
   }
 
   #renderPoint(point) {
-    const pointPresenter = new PointPresenter({destinations: this.destinationsList, offers: this.offersList, pointsContainer: this.#tripListComponent});
+    const pointPresenter = new PointPresenter({
+      destinations: this.destinationsList,
+      offers: this.offersList,
+      pointsContainer: this.#tripListComponent.element,
+      onDataChange: this.#hundleUpdatePoint
+    });
+
+    this.#pointPresenters.set(point.id, pointPresenter);
     pointPresenter.init(point);
   }
+
+  #hundleUpdatePoint = (updatePoint) => {
+    this.pointsList = updateItem(this.pointsList, updatePoint);
+    this.#pointPresenters.get(updatePoint.id).init(updatePoint);
+  };
 
   #renderBoard() {
     render(new SortView(), this.#listContainer);

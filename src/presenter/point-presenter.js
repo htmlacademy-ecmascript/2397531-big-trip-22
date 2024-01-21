@@ -1,4 +1,4 @@
-import { render, replace } from '../framework/render';
+import { remove, render, replace } from '../framework/render';
 import PointView from '../view/point-view';
 import EditPointView from '../view/edit-point-view';
 
@@ -9,15 +9,20 @@ export default class PointPresenter {
   #pointsContainer = null;
   #pointComponent = null;
   #pointEditComponent = null;
+  #onDataChange = null;
 
-  constructor({destinations, offers, pointsContainer}) {
+  constructor({destinations, offers, pointsContainer, onDataChange}) {
     this.#destinations = destinations;
     this.#offers = offers;
     this.#pointsContainer = pointsContainer;
+    this.#onDataChange = onDataChange;
   }
 
   init(point) {
     this.#point = point;
+
+    const prevPointComponent = this.#pointComponent;
+    const prevEditPointComponent = this.#pointEditComponent;
 
     this.#pointComponent = new PointView({
       point: this.#point,
@@ -26,6 +31,9 @@ export default class PointPresenter {
       onEditBtnClick: () => {
         this.#replacePointToEditForm();
         document.addEventListener('keydown', this.#escapeKeydownHundler);
+      },
+      onFavouriteClick: () => {
+        this.#onDataChange({...this.#point, isFavourite: !this.#point.isFavourite});
       }
     });
 
@@ -43,7 +51,21 @@ export default class PointPresenter {
       }
     });
 
-    render(this.#pointComponent, this.#pointsContainer.element);
+    if (prevPointComponent === null || prevEditPointComponent === null) {
+      render(this.#pointComponent, this.#pointsContainer);
+      return;
+    }
+
+    if (this.#pointsContainer.contains(prevPointComponent.element)) {
+      replace(this.#pointComponent, prevPointComponent);
+    }
+
+    if (this.#pointsContainer.contains(prevEditPointComponent.element)) {
+      replace(this.#pointEditComponent, prevEditPointComponent);
+    }
+
+    remove(prevPointComponent);
+    remove(prevEditPointComponent);
   }
 
   #replacePointToEditForm() {
