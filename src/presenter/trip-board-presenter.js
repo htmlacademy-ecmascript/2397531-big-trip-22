@@ -38,7 +38,8 @@ export default class TripBoardPresenter {
       destinations: this.destinationsList,
       offers: this.offersList,
       pointsContainer: this.#tripListComponent.element,
-      onDataChange: this.#hundleUpdatePoint
+      onDataChange: this.#hundleUpdatePoint,
+      onModeChange: this.#hundleModeChange
     });
 
     this.#pointPresenters.set(point.id, pointPresenter);
@@ -58,5 +59,9 @@ export default class TripBoardPresenter {
       this.#renderPoint(this.pointsList[i]);
     }
   }
+
+  #hundleModeChange = () => {
+    this.#pointPresenters.forEach((pointPresenter) => pointPresenter.formReset());
+  };
 
 }
