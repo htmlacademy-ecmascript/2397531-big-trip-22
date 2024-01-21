@@ -1,11 +1,9 @@
 import FilterView from '../view/filter-view.js';
 import SortView from '../view/sort-view.js';
 import ListView from '../view/list-view.js';
-import EditPointView from '../view/edit-point-view.js';
-import PointView from '../view/point-view.js';
-import { render, replace } from '../framework/render.js';
+import { render } from '../framework/render.js';
 import EmptyListView from '../view/empty-list-view.js';
-
+import PointPresenter from './point-presenter.js';
 export default class TripBoardPresenter {
   #tripListComponent = new ListView();
   #pointsModel = null;
@@ -30,55 +28,21 @@ export default class TripBoardPresenter {
       return;
     }
 
+    this.#renderBoard();
+  }
+
+  #renderPoint(point) {
+    const pointPresenter = new PointPresenter({destinations: this.destinationsList, offers: this.offersList, pointsContainer: this.#tripListComponent});
+    pointPresenter.init(point);
+  }
+
+  #renderBoard() {
     render(new SortView(), this.#listContainer);
     render(this.#tripListComponent, this.#listContainer);
 
     for (let i = 0; i < this.pointsList.length; i++) {
       this.#renderPoint(this.pointsList[i]);
     }
-  }
-
-  #renderPoint(point) {
-    const escapeKeydownHundler = (evt) => {
-      if (evt.key === 'ESCAPE') {
-        replaceEditFormToPoint();
-        document.removeEventListener('keydown', escapeKeydownHundler);
-      }
-    };
-
-    const pointComponent = new PointView({
-      point,
-      offers: this.offersList,
-      destinations: this.destinationsList,
-      onEditBtnClick: () => {
-        replacePointToEditForm();
-        document.addEventListener('keydown', escapeKeydownHundler);
-      }
-    });
-
-    const editPointComponent = new EditPointView({
-      point,
-      offers: this.offersList,
-      destinations: this.destinationsList,
-      onFormSubmit: () => {
-        replaceEditFormToPoint();
-        document.removeEventListener('keydown', escapeKeydownHundler);
-      },
-      onFormReset: () => {
-        replaceEditFormToPoint();
-        document.removeEventListener('keydown', escapeKeydownHundler);
-      }
-    });
-
-    function replacePointToEditForm() {
-      replace(editPointComponent, pointComponent);
-    }
-
-    function replaceEditFormToPoint() {
-      replace(pointComponent, editPointComponent);
-    }
-
-    render(pointComponent, this.#tripListComponent.element);
   }
 
 }

@@ -96,8 +96,8 @@ function createAddPouintTemplate(offersList, destinationsList) {
 }
 
 export default class AddPointView extends AbstractView {
-  #offers;
-  #destinations;
+  #offers = null;
+  #destinations = null;
 
   constructor({offers, destinations}) {
     super();
