@@ -40,4 +40,8 @@ function calculateDuration(startDate, endDate) {
   return dayjs(timeDuration).format(timeFormat);
 }
 
-export {getRandomArrayElement, getRandomNumber, formatDate, calculateDuration, filter};
+function updateItem(itemsList, newItem) {
+  return itemsList.map((item) => item.id === newItem.id ? newItem : item);
+}
+
+export {getRandomArrayElement, getRandomNumber, formatDate, calculateDuration, filter, updateItem};
