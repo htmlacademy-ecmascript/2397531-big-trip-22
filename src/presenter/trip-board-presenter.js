@@ -4,13 +4,15 @@ import ListView from '../view/list-view.js';
 import { render } from '../framework/render.js';
 import EmptyListView from '../view/empty-list-view.js';
 import PointPresenter from './point-presenter.js';
-import { updateItem } from '../utils.js';
+import { updateItem, sortPoints } from '../utils.js';
+import { SortType } from '../const.js';
 export default class TripBoardPresenter {
   #tripListComponent = new ListView();
   #pointsModel = null;
   #listContainer = null;
   #filterContainer = null;
   #pointPresenters = new Map();
+  #currentSortType = SortType.DAY;
 
   constructor(listContainer, filterContainer, pointsModel) {
     this.#listContainer = listContainer;
@@ -30,6 +32,8 @@ export default class TripBoardPresenter {
       return;
     }
 
+    render(new SortView({onTripSortClick: this.#hundleTripSortClick}), this.#listContainer);
+    render(this.#tripListComponent, this.#listContainer);
     this.#renderBoard();
   }
 
@@ -52,13 +56,28 @@ export default class TripBoardPresenter {
   };
 
   #renderBoard() {
-    render(new SortView(), this.#listContainer);
-    render(this.#tripListComponent, this.#listContainer);
+    sortPoints[this.#currentSortType](this.pointsList);
 
     for (let i = 0; i < this.pointsList.length; i++) {
       this.#renderPoint(this.pointsList[i]);
     }
   }
+
+  #removePoints() {
+    this.#pointPresenters.forEach((point) => point.destroy());
+  }
+
+  #hundleTripSortClick = (evt) => {
+    if (evt.target.closest('input')) {
+      if (this.#currentSortType === evt.target.dataset.sortType) {
+        return;
+      }
+
+      this.#currentSortType = evt.target.dataset.sortType;
+      this.#removePoints();
+      this.#renderBoard();
+    }
+  };
 
   #hundleModeChange = () => {
     this.#pointPresenters.forEach((pointPresenter) => pointPresenter.formReset());

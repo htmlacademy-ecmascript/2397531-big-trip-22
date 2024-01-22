@@ -1,11 +1,15 @@
 import AbstractView from '../framework/view/abstract-view';
+import { formatDate } from '../utils';
+import { DateFormats } from '../const';
 
-function createHeaderTemplate(totalPrice, route) {
+const MAX_DESTINATIONS = 2;
+
+function createHeaderTemplate(totalPrice, route, points) {
   return (
     `<section class="trip-main__trip-info  trip-info">
       <div class="trip-info__main">
         <h1 class="trip-info__title">${route}</h1>
-        <p class="trip-info__dates">18&nbsp;&mdash;&nbsp;20 Mar</p>
+        <p class="trip-info__dates">${formatDate(points[0].dateFrom, DateFormats.ROUTE_MONTH)}&nbsp;&mdash;&nbsp;${formatDate(points[points.length - 1].dateTo, DateFormats.ROUTE_MONTH)}</p>
       </div>
       <p class="trip-info__cost">
         Total: &euro;&nbsp;<span class="trip-info__cost-value">${totalPrice}</span>
@@ -25,7 +29,7 @@ export class HeaderView extends AbstractView {
   }
 
   get template() {
-    return createHeaderTemplate(this.#totalPrice(), this.#routeDestinations());
+    return createHeaderTemplate(this.#totalPrice(), this.#routeDestinations(), this.#points);
   }
 
   #totalPrice() {
@@ -33,7 +37,7 @@ export class HeaderView extends AbstractView {
   }
 
   #routeDestinations() {
-    if (this.#destinations.length > 2) {
+    if (this.#destinations.length > MAX_DESTINATIONS) {
       return `${this.#destinations[0].name} - ... - ${this.#destinations[this.#destinations.length - 1].name}`;
     }
 
