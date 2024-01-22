@@ -36,24 +36,16 @@ export default class PointPresenter {
       point: this.#point,
       offers: this.#offers,
       destinations: this.#destinations,
-      onEditBtnClick: () => {
-        this.#replacePointToEditForm();
-      },
-      onFavouriteClick: () => {
-        this.#onDataChange({...this.#point, isFavourite: !this.#point.isFavourite});
-      }
+      onEditBtnClick: this.#hundleEditBtnClick,
+      onFavouriteClick: this.#hundleFavouriteClick
     });
 
     this.#pointEditComponent = new EditPointView({
       point: this.#point,
       offers: this.#offers,
       destinations: this.#destinations,
-      onFormSubmit: () => {
-        this.#replaceEditFormToPoint();
-      },
-      onFormReset: () => {
-        this.#replaceEditFormToPoint();
-      }
+      onFormSubmit: this.#hundleFormSubmit,
+      onFormReset: this.#hundleFormReset
     });
 
     if (prevPointComponent === null || prevEditPointComponent === null) {
@@ -71,6 +63,11 @@ export default class PointPresenter {
 
     remove(prevPointComponent);
     remove(prevEditPointComponent);
+  }
+
+  destroy() {
+    remove(this.#pointComponent);
+    remove(this.#pointEditComponent);
   }
 
   formReset() {
@@ -98,4 +95,20 @@ export default class PointPresenter {
       document.removeEventListener('keydown', this.#escapeKeydownHundler);
     }
   }
+
+  #hundleEditBtnClick = () => {
+    this.#replacePointToEditForm();
+  };
+
+  #hundleFavouriteClick = () => {
+    this.#onDataChange({...this.#point, isFavourite: !this.#point.isFavourite});
+  };
+
+  #hundleFormSubmit = () => {
+    this.replaceEditFormToPoint();
+  };
+
+  #hundleFormReset = () => {
+    this.replaceEditFormToPoint();
+  };
 }
