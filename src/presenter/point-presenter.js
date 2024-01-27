@@ -74,6 +74,7 @@ export default class PointPresenter {
     if (this.#mode === Mode.EDITING) {
       this.#replaceEditFormToPoint();
     }
+    this.#pointEditComponent.reset(this.#point);
   }
 
   #replacePointToEditForm() {
@@ -91,6 +92,7 @@ export default class PointPresenter {
 
   #escapeKeydownHundler(evt) {
     if (evt.key === 'ESCAPE') {
+      this.#pointEditComponent.reset(this.#point);
       this.#replaceEditFormToPoint();
       document.removeEventListener('keydown', this.#escapeKeydownHundler);
     }
@@ -104,11 +106,13 @@ export default class PointPresenter {
     this.#onDataChange({...this.#point, isFavourite: !this.#point.isFavourite});
   };
 
-  #hundleFormSubmit = () => {
+  #hundleFormSubmit = (point) => {
     this.replaceEditFormToPoint();
+    this.#onDataChange(point);
   };
 
   #hundleFormReset = () => {
+    this.#pointEditComponent.reset(this.#point);
     this.replaceEditFormToPoint();
   };
 }

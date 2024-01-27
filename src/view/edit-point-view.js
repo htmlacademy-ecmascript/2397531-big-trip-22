@@ -125,7 +125,7 @@ export default class EditPointView extends AbstractStatefulView {
 
   #formSubmitHundler = (evt) => {
     evt.preventDefault();
-    this.#hundleFormSubmit();
+    this.#hundleFormSubmit(this._state);
   };
 
   #formResetHundler = () => {
@@ -150,6 +150,10 @@ export default class EditPointView extends AbstractStatefulView {
     this.updateElement({
       basePrice: evt.target.value
     })
+  }
+
+  reset(point) {
+    this.updateElement(point);
   }
 
   _restoreHandlers = () => {
