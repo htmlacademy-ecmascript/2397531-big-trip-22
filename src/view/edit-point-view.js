@@ -77,8 +77,8 @@ function createEditPointView(point, offersList, destinations) {
             <div class="event__available-offers">
                 ${offersPoint.offers.map((offerPoint) => (`
                 <div class="event__offer-selector">
-                  <input class="event__offer-checkbox  visually-hidden" id="event-offer-luggage-${offerPoint.id}" type="checkbox" name="event-offer-luggage" ${(offers.includes(offerPoint.id) ? 'checked' : '')}>
-                  <label class="event__offer-label" for="event-offer-luggage-${offerPoint.id}">
+                  <input class="event__offer-checkbox  visually-hidden" id="event-offer-${offerPoint.title}-${offerPoint.id}" data-id-${offerPoint.id} type="checkbox" name="event-offer-luggage" ${(offers.includes(offerPoint.id) ? 'checked' : '')}>
+                  <label class="event__offer-label" for="event-offer-${offerPoint.title}-${offerPoint.id}">
                   <span class="event__offer-title">${offerPoint.title}</span>
                   &plus;&euro;&nbsp;
                   <span class="event__offer-price">${offerPoint.price}</span>
@@ -110,7 +110,7 @@ export default class EditPointView extends AbstractStatefulView {
 
   constructor({point, offers, destinations, onFormSubmit, onFormReset}) {
     super();
-    this._setState = point;
+    this._setState(point);
     this.#offers = offers;
     this.#destinations = destinations;
     this.#hundleFormSubmit = onFormSubmit;
@@ -135,7 +135,8 @@ export default class EditPointView extends AbstractStatefulView {
   #typeChangeHundler = (evt) => {
     if (evt.target.closest('input')) {
       this.updateElement({
-        type: evt.target.value
+        type: evt.target.value,
+        offers: []
       });
     }
   }
@@ -152,6 +153,18 @@ export default class EditPointView extends AbstractStatefulView {
     })
   }
 
+  #offersChangeHundler = (evt) => {
+    if (evt.target.checked) {
+      this._setState({
+        offers: [...this._state.offers, parseInt(evt.target.dataset.id, 10)]
+      })
+    } else {
+      this._setState({
+        offers: [...this._state.offers.filter((offer) => offer.id !== evt.target.dataset.id)]
+      })
+    }
+  }
+
   reset(point) {
     this.updateElement(point);
   }
@@ -163,5 +176,6 @@ export default class EditPointView extends AbstractStatefulView {
     this.element.querySelector('.event__type-group').addEventListener('click', this.#typeChangeHundler);
     this.element.querySelector('.event__input--destination').addEventListener('change', this.#destinationChangeHundler);
     this.element.querySelector('.event__input--price').addEventListener('change', this.#priceChangeHundler);
+    this.element.querySelector('.event__available-offers').addEventListener('change', this.#offersChangeHundler)
   }
 }

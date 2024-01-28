@@ -72,9 +72,9 @@ export default class PointPresenter {
 
   formReset() {
     if (this.#mode === Mode.EDITING) {
+      this.#pointEditComponent.reset(this.#point);
       this.#replaceEditFormToPoint();
     }
-    this.#pointEditComponent.reset(this.#point);
   }
 
   #replacePointToEditForm() {
@@ -107,12 +107,12 @@ export default class PointPresenter {
   };
 
   #hundleFormSubmit = (point) => {
-    this.replaceEditFormToPoint();
+    this.#replaceEditFormToPoint();
     this.#onDataChange(point);
   };
 
   #hundleFormReset = () => {
     this.#pointEditComponent.reset(this.#point);
-    this.replaceEditFormToPoint();
+    this.#replaceEditFormToPoint();
   };
 }
