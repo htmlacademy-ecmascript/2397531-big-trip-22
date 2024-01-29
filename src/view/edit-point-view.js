@@ -15,7 +15,7 @@ function createTypesEventList(type) {
                 </div>`)).join('')}
               </fieldset>
             </div>`
-         );
+  );
 }
 
 function createEditPointView(point, offersList, destinations) {
