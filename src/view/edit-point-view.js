@@ -15,7 +15,7 @@ function createTypesEventList(type) {
                 </div>`)).join('')}
               </fieldset>
             </div>`
-);
+         );
 }
 
 function createEditPointView(point, offersList, destinations) {
@@ -139,31 +139,31 @@ export default class EditPointView extends AbstractStatefulView {
         offers: []
       });
     }
-  }
+  };
 
   #destinationChangeHundler = (evt) => {
     this.updateElement({
       destination: this.#destinations.find((dest) => dest.name === evt.target.value).id
     });
-  }
+  };
 
   #priceChangeHundler = (evt) => {
     this.updateElement({
       basePrice: evt.target.value
-    })
-  }
+    });
+  };
 
   #offersChangeHundler = (evt) => {
     if (evt.target.checked) {
       this._setState({
         offers: [...this._state.offers, parseInt(evt.target.dataset.id, 10)]
-      })
+      });
     } else {
       this._setState({
         offers: [...this._state.offers.filter((offer) => offer.id !== evt.target.dataset.id)]
-      })
+      });
     }
-  }
+  };
 
   reset(point) {
     this.updateElement(point);
@@ -176,6 +176,6 @@ export default class EditPointView extends AbstractStatefulView {
     this.element.querySelector('.event__type-group').addEventListener('click', this.#typeChangeHundler);
     this.element.querySelector('.event__input--destination').addEventListener('change', this.#destinationChangeHundler);
     this.element.querySelector('.event__input--price').addEventListener('change', this.#priceChangeHundler);
-    this.element.querySelector('.event__available-offers').addEventListener('change', this.#offersChangeHundler)
-  }
+    this.element.querySelector('.event__available-offers').addEventListener('change', this.#offersChangeHundler);
+  };
 }
