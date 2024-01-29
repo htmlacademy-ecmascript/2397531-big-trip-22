@@ -33,11 +33,10 @@ export default class TripBoardPresenter {
     }
 
     render(new SortView({onTripSortClick: this.#hundleTripSortClick}), this.#listContainer);
-    render(this.#tripListComponent, this.#listContainer);
     this.#renderBoard();
   }
 
-  #renderPoint(point) {
+  #renderPoint (point) {
     const pointPresenter = new PointPresenter({
       destinations: this.destinationsList,
       offers: this.offersList,
@@ -56,6 +55,7 @@ export default class TripBoardPresenter {
   };
 
   #renderBoard() {
+    render(this.#tripListComponent, this.#listContainer);
     sortPoints[this.#currentSortType](this.pointsList);
 
     for (let i = 0; i < this.pointsList.length; i++) {
